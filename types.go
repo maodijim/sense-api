@@ -343,58 +343,75 @@ const (
 )
 
 type RealTime struct {
-	Voltage []float64 `json:"voltage"`
-	Frame   int       `json:"frame"`
-	Devices []struct {
-		Id   string `json:"id"`
-		Name string `json:"name"`
-		Icon string `json:"icon"`
-		Tags struct {
-			DefaultUserDeviceType       string `json:"DefaultUserDeviceType"`
-			DeviceListAllowed           string `json:"DeviceListAllowed"`
-			SSIEnabled                  string `json:"SSIEnabled,omitempty"`
-			TimelineAllowed             string `json:"TimelineAllowed"`
-			UserDeviceType              string `json:"UserDeviceType"`
-			UserDeviceTypeDisplayString string `json:"UserDeviceTypeDisplayString"`
-			UserEditable                string `json:"UserEditable"`
-			UserDeleted                 string `json:"UserDeleted,omitempty"`
-			UserMergeable               string `json:"UserMergeable,omitempty"`
-		} `json:"tags"`
-		Attrs []interface{} `json:"attrs"`
-		W     float64       `json:"w"`
-	} `json:"devices"`
-	Deltas      []interface{} `json:"deltas"`
-	DefaultCost int           `json:"defaultCost"`
-	Channels    []float64     `json:"channels"`
-	Hz          float64       `json:"hz"`
-	W           float64       `json:"w"`
-	C           int           `json:"c"`
-	TouAlert    struct {
-		EndTime        time.Time `json:"end_time"`
-		CostMultiplier int       `json:"cost_multiplier"`
-		TouCost        int       `json:"tou_cost"`
-		Name           string    `json:"name"`
-	} `json:"tou_alert"`
-	SolarW float64 `json:"solar_w"`
-	SolarC int     `json:"solar_c"`
-	Stats  struct {
-		Brcv float64 `json:"brcv"`
-		Mrcv float64 `json:"mrcv"`
-		Msnd float64 `json:"msnd"`
-	} `json:"_stats"`
-	Aux struct {
-		Solar []float64 `json:"solar"`
-	} `json:"aux"`
-	DW       int `json:"d_w"`
-	DSolarW  int `json:"d_solar_w"`
-	GridW    int `json:"grid_w"`
-	SolarPct int `json:"solar_pct"`
-	Epoch    int `json:"epoch"`
-	Payload  struct {
-		Authorized  bool   `json:"authorized"`
-		ErrorReason string `json:"error_reason"`
-		TotpEnabled bool   `json:"totp_enabled"`
-		Online      bool   `json:"online"`
+	Payload struct {
+		Voltage []float64 `json:"voltage"`
+		Frame   int       `json:"frame"`
+		Devices []struct {
+			Id   string `json:"id"`
+			Name string `json:"name"`
+			Icon string `json:"icon"`
+			Tags struct {
+				DefaultUserDeviceType       string `json:"DefaultUserDeviceType"`
+				DeviceListAllowed           string `json:"DeviceListAllowed"`
+				SSIEnabled                  string `json:"SSIEnabled,omitempty"`
+				TimelineAllowed             string `json:"TimelineAllowed"`
+				UserDeviceType              string `json:"UserDeviceType"`
+				UserDeviceTypeDisplayString string `json:"UserDeviceTypeDisplayString"`
+				UserEditable                string `json:"UserEditable"`
+				UserDeleted                 string `json:"UserDeleted,omitempty"`
+				UserMergeable               string `json:"UserMergeable,omitempty"`
+			} `json:"tags"`
+			Attrs []interface{} `json:"attrs"`
+			W     float64       `json:"w"`
+		} `json:"devices"`
+		Deltas      []interface{} `json:"deltas"`
+		DefaultCost int           `json:"defaultCost"`
+		Channels    []float64     `json:"channels"`
+		Hz          float64       `json:"hz"`
+		W           float64       `json:"w"`
+		C           int           `json:"c"`
+		TouAlert    struct {
+			EndTime        time.Time `json:"end_time"`
+			CostMultiplier float64   `json:"cost_multiplier"`
+			TouCost        int       `json:"tou_cost"`
+			Name           string    `json:"name"`
+		} `json:"tou_alert"`
+		SolarW float64 `json:"solar_w"`
+		SolarC int     `json:"solar_c"`
+		Stats  struct {
+			Brcv float64 `json:"brcv"`
+			Mrcv float64 `json:"mrcv"`
+			Msnd float64 `json:"msnd"`
+		} `json:"_stats"`
+		Aux struct {
+			Solar []float64 `json:"solar"`
+		} `json:"aux"`
+		DW       int `json:"d_w"`
+		DSolarW  int `json:"d_solar_w"`
+		GridW    int `json:"grid_w"`
+		SolarPct int `json:"solar_pct"`
+		Epoch    int `json:"epoch"`
+
+		Features                string `json:"features"`
+		UserVersion             int    `json:"user_version"`
+		PartnerChecksum         string `json:"partner_checksum"`
+		MonitorOverviewChecksum string `json:"monitor_overview_checksum"`
+		DeviceDataChecksum      string `json:"device_data_checksum"`
+		SettingsVersion         int    `json:"settings_version"`
+		PendingEvents           struct {
+			Type           string `json:"type"`
+			NewDeviceFound struct {
+				DeviceId  interface{} `json:"device_id"`
+				Guid      string      `json:"guid"`
+				Timestamp interface{} `json:"timestamp"`
+			} `json:"new_device_found"`
+			MonitorId int `json:"monitor_id"`
+			Goal      struct {
+				Guid           string      `json:"guid"`
+				Timestamp      interface{} `json:"timestamp"`
+				NotificationId interface{} `json:"notification_id"`
+			} `json:"goal"`
+		} `json:"pending_events"`
 	} `json:"payload"`
 	Type PayloadType `json:"type"`
 }

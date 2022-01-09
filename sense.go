@@ -235,14 +235,11 @@ func (s *SenseApi) ReadMessage() (msg *RealTime, err error) {
 	if err != nil {
 		return msg, err
 	}
-	body := struct {
-		Payload RealTime `json:"payload"`
-	}{}
-	err = json.Unmarshal(b, &body)
+	msg = &RealTime{}
+	err = json.Unmarshal(b, &msg)
 	if err != nil {
 		return msg, err
 	}
-	msg = &body.Payload
 	return msg, err
 }
 
