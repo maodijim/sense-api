@@ -1,4 +1,4 @@
-package sense_api
+package sense
 
 import (
 	"testing"
