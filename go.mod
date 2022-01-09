@@ -1,4 +1,4 @@
-module github.com/maodijim/sense
+module github.com/maodijim/sense-api
 
 go 1.17
 
