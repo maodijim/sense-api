@@ -8,7 +8,6 @@ import (
 
 func main() {
 	s, _ := sense.NewSenseApi("test@test.com", "test")
-	timer := time.After(time.Second * 300)
 
 	// Get always on
 	al, _ := s.AlwaysOn()
@@ -28,7 +27,22 @@ func main() {
 	// Renew access token
 	_ = s.RenewToken()
 
-	fmt.Printf("%v\n%v\n%v\n%v", al, tl, do, t)
+	fmt.Printf("%v\n%v\n%v\n%v\n", al, tl, do, t)
+
+	shouldClose := make(chan bool, 1)
+	go func() {
+		_ = s.ReadMessageAsync(shouldClose)
+	}()
+	time.Sleep(time.Second * 5)
+	msgs, _ := s.ReadMessages()
+	shouldClose <- true
+	fmt.Printf("%d messages\n", len(msgs))
+	err := s.Close()
+	fmt.Println(err)
+	msg, err := s.ReadMessage()
+	fmt.Println(msg)
+
+	timer := time.After(time.Second * 5)
 	for {
 		select {
 		case <-timer:
@@ -36,11 +50,10 @@ func main() {
 		default:
 			msg, err := s.ReadMessage()
 			if err != nil {
-				fmt.Printf("%v", err)
+				fmt.Printf("%v\n", err)
 				return
 			}
-			fmt.Println(msg)
-			time.Sleep(3 * time.Second)
+			fmt.Printf("message: %s\n", msg)
 		}
 	}
 }

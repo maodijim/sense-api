@@ -4,6 +4,7 @@ import (
 	"encoding/json"
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/websocket"
+	"sync"
 	"time"
 )
 
@@ -107,6 +108,9 @@ type SenseApi struct {
 	wssEndpoint  string
 	refreshToken string
 	authRes      AuthRes
+	mutex        sync.RWMutex
+	messages     []RealTime
+	readingAsync bool
 }
 
 type AlwaysOn struct {
@@ -344,6 +348,7 @@ const (
 
 type RealTime struct {
 	Payload struct {
+		Online  bool      `json:"online"`
 		Voltage []float64 `json:"voltage"`
 		Frame   int       `json:"frame"`
 		Devices []struct {

@@ -27,6 +27,10 @@ const (
 	defaultTimelineItems = 30
 )
 
+var (
+	MaxMessageCache = 200
+)
+
 func (s *SenseApi) apiRequest(method, url, contentType, body string) (res *http.Response, err error) {
 	if s.authRes.AccessToken != "" && isTokenExpired(s.authRes.AccessToken) {
 		s.authRes.AccessToken = ""
@@ -214,22 +218,80 @@ func (s *SenseApi) Trend(scale TrendScale, start time.Time) (trend *TrendType, e
 	return trend, err
 }
 
-// ReadMessage Read real time message
-func (s *SenseApi) ReadMessage() (msg *RealTime, err error) {
+func (s *SenseApi) reconnect() (err error) {
 	if s.ws == nil {
 		if s.authRes.AccessToken != "" && isTokenExpired(s.authRes.AccessToken) {
 			s.authRes.AccessToken = ""
 			err = s.RenewToken()
 			if err != nil {
-				return msg, err
+				return err
 			}
 			err = s.ListenWss()
 			if err != nil {
-				return msg, err
+				return err
 			}
 		} else {
-			return msg, errors.New("websocket closed")
+			err = s.ListenWss()
+			if err != nil {
+				return err
+			}
 		}
+	}
+	return err
+}
+
+// ReadMessageAsync read message async and store messages in cache
+// use ReadMessages() to retrieve cached messages
+func (s *SenseApi) ReadMessageAsync(close <-chan bool) (err error) {
+	s.readingAsync = true
+	for {
+		select {
+		case <-close:
+			s.readingAsync = false
+			return
+		default:
+			err = s.reconnect()
+			if err != nil {
+				s.readingAsync = false
+				return err
+			}
+			rt, err := s.ReadMessage()
+			if err != nil {
+				s.readingAsync = false
+				return err
+			}
+			s.mutex.Lock()
+			s.messages = append(s.messages, *rt)
+			if len(s.messages) > MaxMessageCache {
+				s.messages = s.messages[len(s.messages)-MaxMessageCache : len(s.messages)]
+			}
+			s.mutex.Unlock()
+		}
+	}
+}
+
+// ReadMessages Read Cached messages
+// Cached messages are created async by ReadMessageAsync()
+func (s *SenseApi) ReadMessages() (msgs []RealTime, err error) {
+	if !s.readingAsync {
+		return msgs, errors.New("reading async not start please run ReadMessageAsync() to start async reader")
+	}
+	err = s.reconnect()
+	if err != nil {
+		return msgs, err
+	}
+	s.mutex.Lock()
+	msgs = s.messages
+	s.messages = []RealTime{}
+	s.mutex.Unlock()
+	return msgs, err
+}
+
+// ReadMessage Read one real time message
+func (s *SenseApi) ReadMessage() (msg *RealTime, err error) {
+	err = s.reconnect()
+	if err != nil {
+		return msg, err
 	}
 	_, b, err := s.ws.ReadMessage()
 	if err != nil {
@@ -241,6 +303,19 @@ func (s *SenseApi) ReadMessage() (msg *RealTime, err error) {
 		return msg, err
 	}
 	return msg, err
+}
+
+// Close websocket connection
+func (s *SenseApi) Close() (err error) {
+	if s.ws == nil {
+		return errors.New("websocket already closed")
+	}
+	err = s.ws.Close()
+	if err != nil {
+		return err
+	}
+	s.ws = nil
+	return err
 }
 
 func unmarshallJWT(token string) (result *jwtClaims) {
@@ -285,7 +360,9 @@ func parseRes(res *http.Response, parseType interface{}) (err error) {
 }
 
 func NewSenseApi(username, password string) (s *SenseApi, err error) {
-	s = &SenseApi{}
+	s = &SenseApi{
+		messages: []RealTime{},
+	}
 	err = s.authenticate(username, password)
 	if err != nil {
 		return s, err
