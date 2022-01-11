@@ -113,7 +113,7 @@ func (s *SenseApi) authenticate(username, password string) (err error) {
 	return err
 }
 
-func (s SenseApi) getMonitorId() string {
+func (s *SenseApi) getMonitorId() string {
 	if len(s.authRes.Monitors) == 0 {
 		return ""
 	}
