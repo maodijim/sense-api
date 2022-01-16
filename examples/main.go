@@ -9,6 +9,9 @@ import (
 func main() {
 	s, _ := sense.NewSenseApi("test@test.com", "test")
 
+	// Get history comparisons
+	hc, _ := s.GetHistoryComparison()
+
 	// Get always on
 	al, _ := s.AlwaysOn()
 
@@ -27,7 +30,7 @@ func main() {
 	// Renew access token
 	_ = s.RenewToken()
 
-	fmt.Printf("%v\n%v\n%v\n%v\n", al, tl, do, t)
+	fmt.Printf("%v\n%v\n%v\n%v\n%v\n", al, tl, do, t, hc)
 
 	shouldClose := make(chan bool, 1)
 	go func() {

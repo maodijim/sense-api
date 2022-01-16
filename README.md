@@ -13,7 +13,7 @@ Sense Energy Monitor Go Api
   - [x] GET devices overview
   - [x] GET always on
   - [x] GET history trends
-  - [ ] GET history comparisons
+  - [x] GET history comparisons
   - [x] GET realtime data
   - [ ] GET status
   - [ ] GET rate_zones
