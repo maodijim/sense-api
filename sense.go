@@ -289,6 +289,7 @@ func (s *SenseApi) ReadMessages() (msgs []RealTime, err error) {
 
 // ReadMessage Read one real time message
 func (s *SenseApi) ReadMessage() (msg *RealTime, err error) {
+	msg = &RealTime{}
 	err = s.reconnect()
 	if err != nil {
 		return msg, err
@@ -297,7 +298,6 @@ func (s *SenseApi) ReadMessage() (msg *RealTime, err error) {
 	if err != nil {
 		return msg, err
 	}
-	msg = &RealTime{}
 	err = json.Unmarshal(b, &msg)
 	if err != nil {
 		return msg, err
@@ -316,6 +316,21 @@ func (s *SenseApi) Close() (err error) {
 	}
 	s.ws = nil
 	return err
+}
+
+func (s *SenseApi) GetHistoryComparison() (hc HistoryCompare, err error) {
+	v := url.Values{}
+	v.Add("monitor_id", s.getMonitorId())
+	u := fmt.Sprintf("%s/app/history/comparisons?%s", apiUrl, v.Encode())
+	res, err := s.apiRequest("", u, "", "")
+	if err != nil {
+		return hc, err
+	}
+	err = parseRes(res, &hc)
+	if err != nil {
+		return hc, err
+	}
+	return hc, err
 }
 
 func unmarshallJWT(token string) (result *jwtClaims) {

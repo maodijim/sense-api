@@ -31,6 +31,7 @@ func TestNewSenseApi(t *testing.T) {
 			_, _ = s.TimeLine(30)
 			_, _ = s.AlwaysOn()
 			_, _ = s.Trend(TrendMonth, time.Now())
+			_, _ = s.GetHistoryComparison()
 		})
 	}
 }

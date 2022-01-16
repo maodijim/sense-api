@@ -425,3 +425,25 @@ func (r RealTime) String() string {
 	b, _ := json.Marshal(r)
 	return string(b)
 }
+
+type HistoryCompare struct {
+	PeriodTitle         string `json:"period_title"`
+	SummaryCohortMarker int    `json:"summary_cohort_marker"`
+	Comparisons         []struct {
+		ComparisonText string   `json:"comparison_text"`
+		TercileStrings []string `json:"tercile_strings"`
+		CohortMarker   int      `json:"cohort_marker"`
+		Cohort         struct {
+			Id         int    `json:"id"`
+			PostalCode string `json:"postal_code"`
+			AreaCode   string `json:"area_code"`
+			State      string `json:"state"`
+			HomeSize   string `json:"home_size"`
+			Location   string `json:"location"`
+		} `json:"cohort"`
+		Title      string  `json:"title"`
+		W          float64 `json:"w"`
+		CohortAvgW float64 `json:"cohort_avg_w"`
+	} `json:"comparisons"`
+	AvgW float64 `json:"avg_w"`
+}
