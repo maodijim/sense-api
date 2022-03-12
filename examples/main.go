@@ -2,12 +2,16 @@ package main
 
 import (
 	"fmt"
-	"github.com/maodijim/sense-api"
 	"time"
+
+	"github.com/maodijim/sense-api"
 )
 
 func main() {
 	s, _ := sense.NewSenseApi("test@test.com", "test")
+
+	// Get Time of Use Rate Zones
+	rz, _ := s.RateZone()
 
 	// Get history comparisons
 	hc, _ := s.GetHistoryComparison()
@@ -30,7 +34,7 @@ func main() {
 	// Renew access token
 	_ = s.RenewToken()
 
-	fmt.Printf("%v\n%v\n%v\n%v\n%v\n", al, tl, do, t, hc)
+	fmt.Printf("%v\n%v\n%v\n%v\n%v\n%v\n", al, tl, do, t, hc, rz)
 
 	shouldClose := make(chan bool, 1)
 	go func() {

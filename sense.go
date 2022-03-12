@@ -4,9 +4,10 @@ import (
 	"encoding/json"
 	"errors"
 	"fmt"
+	"log"
+
 	"github.com/golang-jwt/jwt"
 	"github.com/gorilla/websocket"
-	"log"
 
 	"io/ioutil"
 	"net/http"
@@ -188,6 +189,21 @@ func (s *SenseApi) TimeLine(items int) (tl *TimeLineRes, err error) {
 		return tl, err
 	}
 	return tl, err
+}
+
+// RateZone Time of Use Rate Zones
+func (s *SenseApi) RateZone() (rz *RateZones, err error) {
+	u := fmt.Sprintf("%s/app/monitors/%s/rate_zones", apiUrl, s.getMonitorId())
+	res, err := s.apiRequest("", u, "", "")
+	if err != nil {
+		return rz, err
+	}
+	rz = &RateZones{}
+	err = parseRes(res, rz)
+	if err != nil {
+		return rz, err
+	}
+	return rz, err
 }
 
 type TrendScale string

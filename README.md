@@ -16,6 +16,6 @@ Sense Energy Monitor Go Api
   - [x] GET history comparisons
   - [x] GET realtime data
   - [ ] GET status
-  - [ ] GET rate_zones
+  - [x] GET rate_zones
   - [ ] GET electricity_cost
   - [ ] GET home attributes

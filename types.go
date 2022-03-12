@@ -2,10 +2,11 @@ package sense
 
 import (
 	"encoding/json"
-	"github.com/golang-jwt/jwt"
-	"github.com/gorilla/websocket"
 	"sync"
 	"time"
+
+	"github.com/golang-jwt/jwt"
+	"github.com/gorilla/websocket"
 )
 
 type AuthRes struct {
@@ -275,6 +276,57 @@ type DevicesOverview struct {
 		GivenLocation string `json:"given_location,omitempty"`
 	} `json:"devices"`
 	DeviceDataChecksum string `json:"device_data_checksum"`
+}
+
+type RateZones struct {
+	Historic []struct {
+		Id                  int         `json:"id"`
+		Name                string      `json:"name"`
+		Monitor             interface{} `json:"monitor"`
+		StartDate           time.Time   `json:"start_date"`
+		EndDate             time.Time   `json:"end_date"`
+		StartTime           string      `json:"start_time"`
+		EndTime             string      `json:"end_time"`
+		DaysEnabledBitValue int         `json:"days_enabled_bit_value"`
+		Cost                float64     `json:"cost"`
+		Alert               bool        `json:"alert"`
+		Rollover            bool        `json:"rollover"`
+		RolledOver          interface{} `json:"rolled_over"`
+		Status              string      `json:"status"`
+		DaysEnabled         string      `json:"days_enabled"`
+	} `json:"historic"`
+	Future []struct {
+		Id                  int         `json:"id"`
+		Name                string      `json:"name"`
+		Monitor             int         `json:"monitor"`
+		StartDate           time.Time   `json:"start_date"`
+		EndDate             time.Time   `json:"end_date"`
+		StartTime           string      `json:"start_time"`
+		EndTime             string      `json:"end_time"`
+		DaysEnabledBitValue int         `json:"days_enabled_bit_value"`
+		Cost                float64     `json:"cost"`
+		Alert               bool        `json:"alert"`
+		Rollover            bool        `json:"rollover"`
+		RolledOver          interface{} `json:"rolled_over"`
+		Status              string      `json:"status"`
+		DaysEnabled         string      `json:"days_enabled"`
+	} `json:"future"`
+	Present []struct {
+		Id                  int         `json:"id"`
+		Name                string      `json:"name"`
+		Monitor             int         `json:"monitor"`
+		StartDate           time.Time   `json:"start_date"`
+		EndDate             time.Time   `json:"end_date"`
+		StartTime           string      `json:"start_time"`
+		EndTime             string      `json:"end_time"`
+		DaysEnabledBitValue int         `json:"days_enabled_bit_value"`
+		Cost                float64     `json:"cost"`
+		Alert               bool        `json:"alert"`
+		Rollover            bool        `json:"rollover"`
+		RolledOver          interface{} `json:"rolled_over"`
+		Status              string      `json:"status"`
+		DaysEnabled         string      `json:"days_enabled"`
+	} `json:"present"`
 }
 
 type jwtClaims struct {

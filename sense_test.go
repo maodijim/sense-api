@@ -32,6 +32,7 @@ func TestNewSenseApi(t *testing.T) {
 			_, _ = s.AlwaysOn()
 			_, _ = s.Trend(TrendMonth, time.Now())
 			_, _ = s.GetHistoryComparison()
+			_, _ = s.RateZone()
 		})
 	}
 }
